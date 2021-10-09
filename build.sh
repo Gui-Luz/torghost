@@ -3,7 +3,7 @@ echo "Installing prerequisites "
 sudo apt-get install tor python3-pip -y 
 sudo apt-get install cython3 -y
 echo "Installing dependencies "
-sudo pip3 install -r requirements.txt 
+sudo pip3 install -r requirements.txt -y
 mkdir build
 cd build
 cython3 ../torghost.py --embed -o torghost.c --verbose
