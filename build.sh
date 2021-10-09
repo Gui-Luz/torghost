@@ -1,11 +1,19 @@
+#!/usr/bin/env bash
+
 echo "Torghost installer v3.0"
 echo "Installing prerequisites "
-sudo apt-get install tor python3-pip -y 
-sudo apt-get install cython3 -y
+sudo apt-get install tor python3-pip cython3 -y 
 echo "Installing dependencies "
-sudo pip3 install -r requirements.txt -y
+sudo pip3 install -r requirements.txt 
 mkdir build
 cd build
+py3_version=$(python3 -V | cut -d' ' -f2 | cut -d'.' -f1,2)
+if [ $? -eq 0 ]; then
+        echo [SUCCESS] Python ${py3_version} installed
+else
+        echo [ERROR] Python3 version not found
+        exit 1
+fi
 cython3 ../torghost.py --embed -o torghost.c --verbose
 if [ $? -eq 0 ]; then
     echo [SUCCESS] Generated C code
@@ -13,9 +21,9 @@ else
     echo [ERROR] Build failed. Unable to generate C code using cython3
     exit 1
 fi
-gcc -Os -I /usr/include/python3.8 -o torghost torghost.c -lpython3.8 -lpthread -lm -lutil -ldl
+gcc -Os -I /usr/include/python${py3_version} -o torghost torghost.c -lpython${py3_version} -lpthread -lm -lutil -ldl `python${py3_version}-config --ldflags`
 if [ $? -eq 0 ]; then
-    echo [SUCCESS] Compiled to static binay 
+    echo [SUCCESS] Compiled to static binary 
 else
     echo [ERROR] Build failed
     exit 1
@@ -24,7 +32,3 @@ sudo cp -r torghost /usr/bin/
 if [ $? -eq 0 ]; then
     echo [SUCCESS] Copied binary to /usr/bin 
 else
-    echo [ERROR] Unable to copy
-    ecit 1
-fi
-
