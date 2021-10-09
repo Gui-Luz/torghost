@@ -32,3 +32,6 @@ sudo cp -r torghost /usr/bin/
 if [ $? -eq 0 ]; then
     echo [SUCCESS] Copied binary to /usr/bin 
 else
+    echo [ERROR] Unable to copy
+    exit 1
+fi
